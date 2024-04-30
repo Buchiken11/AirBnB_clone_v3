@@ -4,7 +4,7 @@
 an endpoint that retrieves the number of each objects by type
 """
 from models import storage
-from fask import jsonify
+from flask import jsonify
 from api.vi.views import app_views
 
 @app_veiws.route('/status')
