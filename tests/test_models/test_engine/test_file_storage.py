@@ -114,27 +114,26 @@ class TestFileStorage(unittest.TestCase):
             js = f.read()
         self.assertEqual(json.loads(string), json.loads(js))
 
-
-@unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_get(self, cls, id):
         """Test method to retrieve one object of an instance"""
         storage = FileStorage()
         storage.reload()
-        found_state = {"name" : "Abuja"}
+        found_state = {"name": "Abuja"}
         new_state = State(**found_state)
         storage.new(new_state)
         storage.save()
         state_found = storage.get(State, new_state.id)
         self.assertAlmostEqual(new_state, found_state)
-        fake_state_id = storage.get(State,'fake_id')
+        fake_state_id = storage.get(State, 'fake_id')
         self.assertEqual(fake_state_id, None)
 
-        @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_count(self, cls=None):
         """A test method to count the number of objects in storage"""
         storage = FileStorage()
         storage.reload()
-        found_state = {"name" : "Imo"}
+        found_state = {"name": "Imo"}
         new_state = State(**found_state)
         storage.new(new_state)
 
