@@ -1,31 +1,46 @@
 #!/usr/bin/python3
+"""
+index
+"""
 
-"""
-an endpoint that retrieves the number of each objects by type
-"""
-from models import storage
 from flask import jsonify
-from api.vi.views import app_views
+from api.v1.views import app_views
 
-@app_veiws.route('/status')
-def api_status_code():
-    """
-    Return a json response for Restful api
-    """
-    reply = {'status': "OK"}
-    return jsonify(reply)
+from models import storage
 
-@app_views.route('stats')
-def get_stats():
+
+@app_views.route("/status", methods=['GET'], strict_slashes=False)
+def status():
     """
-    Gets the status code of url with flask api
+    status route
+    :return: response with json
     """
-    stats = {
-        'amenities': storage.count('Amenity'),
-        'cities': storage.count('Cities'),
-        'places': storage.count('Place'),
-        'reveiws': storage.count('Reveiws'),
-        'states': storage.count('States'),
-        'users': storage.count('Users'),
+    data = {
+        "status": "OK"
     }
-    return jsonify(stats)
+
+    resp = jsonify(data)
+    resp.status_code = 200
+
+    return resp
+
+
+@app_views.route("/stats", methods=['GET'], strict_slashes=False)
+def stats():
+    """
+    stats of all objs route
+    :return: json of all objs
+    """
+    data = {
+        "amenities": storage.count("Amenity"),
+        "cities": storage.count("City"),
+        "places": storage.count("Place"),
+        "reviews": storage.count("Review"),
+        "states": storage.count("State"),
+        "users": storage.count("User"),
+    }
+
+    resp = jsonify(data)
+    resp.status_code = 200
+
+    return resp

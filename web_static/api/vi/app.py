@@ -1,30 +1,44 @@
 #!/usr/bin/python3
-
 """
-create a handler for 404 errors that returns a JSON-formatted 404
-status code response
+app
 """
-from flask import jsonify
-from flask import Flask
-from models import storage
+from flask_cors import CORS
+from flask import Flask, jsonify
 from os import getenv
-from api.vi.views import app_views
+
+from api.v1.views import app_views
+from models import storage
+
 
 app = Flask(__name__)
+
+CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
+
 app.register_blueprint(app_views)
 
+
 @app.teardown_appcontext
-def teardown_engine(Exception):
-    """return a message before running"""
+def teardown(exception):
+    """
+    teardown function
+    """
     storage.close()
 
-    @app.error(404)
-    def error_page(error):
-        """Return the error message response "Not found" if url doesn't exist"""
-        reply = {"error": "Not found"}
-        return jsonify(reply), 404
 
-    if __name__ == '__main':
-        HOST = getenv('HBNB_API_HOST', '0.0.0.')
-        PORT = int(getenv('HBNB_API_PORT', 5000))
-        app.run(debug=True, host=HOST, port=PORT, threaded=True)
+@app.errorhandler(404)
+def handle_404(exception):
+    """
+    handles 404 error
+    :return: returns 404 json
+    """
+    data = {
+        "error": "Not found"
+    }
+
+    resp = jsonify(data)
+    resp.status_code = 404
+
+    return(resp)
+
+if __name__ == "__main__":
+    app.run(getenv("HBNB_API_HOST"), getenv("HBNB_API_PORT"))
